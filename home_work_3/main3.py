@@ -47,7 +47,6 @@ def total_energy(y: np.ndarray, L1: float, L2: float, m1: float, m2: float, g: f
     return T + V
 
 def main():
-    # Parameters from Table 1
     m1, m2 = 1.0, 1.0
     L1, L2 = 1.0, 1.0
     g = 9.81
@@ -60,14 +59,12 @@ def main():
     delta_0 = 1e-6
     y0_B = np.array([np.pi / 2, 0.0, np.pi / 2 + 0.01 + delta_0, 0.0])
 
-    # --- TASK 1: Numerical solution (Case A, tolerance 1e-8) ---
     sol_A = solve_ivp(
         rhs, t_span, y0_A, method="RK45", t_eval=t_eval,
         args=(L1, L2, m1, m2, g), rtol=1e-8, atol=1e-8
     )
     x1_A, y1_A, x2_A, y2_A = get_cartesian(sol_A.y[0], sol_A.y[2], L1, L2)
 
-    # 1.4. Static trajectory plot of the lower bob
     plt.figure(figsize=(6, 6))
     plt.plot(x2_A, y2_A, lw=1.2, color="royalblue")
     plt.title("Lower bob trajectory $(x_2(t), y_2(t))$")
@@ -77,14 +74,12 @@ def main():
     plt.grid(True)
     plt.show()
 
-    # --- TASK 2: Instability check and energy conservation ---
     sol_B = solve_ivp(
         rhs, t_span, y0_B, method="RK45", t_eval=t_eval,
         args=(L1, L2, m1, m2, g), rtol=1e-8, atol=1e-8
     )
     _, _, x2_B, y2_B = get_cartesian(sol_B.y[0], sol_B.y[2], L1, L2)
 
-    # 2.2. Side-by-side comparison (Cases A and B)
     fig, axes = plt.subplots(1, 2, figsize=(12, 5), sharex=True, sharey=True)
     axes[0].plot(x2_A, y2_A, lw=1.1, color="royalblue")
     axes[0].set_title(r"Case A: $\theta_2(0) = \pi/2 + 0.01$")
@@ -101,7 +96,6 @@ def main():
     plt.tight_layout()
     plt.show()
 
-    # 2.3. Relative energy error at 1e-8 vs 1e-5
     sol_A_coarse = solve_ivp(
         rhs, t_span, y0_A, method="RK45", t_eval=t_eval,
         args=(L1, L2, m1, m2, g), rtol=1e-5, atol=1e-5
@@ -125,7 +119,6 @@ def main():
     plt.tight_layout()
     plt.show()
 
-    # --- TASK 1.5: Double pendulum animation ---
     fig_anim, ax_anim = plt.subplots(figsize=(6, 6))
     ax_anim.set_xlim(-(L1 + L2 + 0.2), L1 + L2 + 0.2)
     ax_anim.set_ylim(-(L1 + L2 + 0.2), L1 + L2 + 0.2)
